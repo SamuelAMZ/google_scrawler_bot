@@ -14,6 +14,9 @@ const { setTimeout } = require("timers/promises");
 
 require("dotenv").config();
 
+// fonctions imports
+const paginateAndReturnResults = require("./paginateInPages/index");
+
 const scrapper = async () => {
   const browser = await puppeteer.launch({
     headless: false,
@@ -35,7 +38,7 @@ const scrapper = async () => {
 
   //   typing the keyword
   await page.waitForSelector("[name='q']");
-  await page.type("[name='q']", "lorem ipsum", {
+  await page.type("[name='q']", "rose monroe", {
     delay: 100,
   });
 
@@ -44,7 +47,18 @@ const scrapper = async () => {
   await launchSearchBtn.evaluate((b) => b.click());
 
   //   wait
-  await page.waitForTimeout(100000);
+  await page.waitForTimeout(3000);
+
+  //   paginate on the first 10 results and return all results
+  const results = await paginateAndReturnResults(page);
+  if (!results) {
+    console.log("no result found");
+  } else {
+    console.log(results, results.length);
+  }
+
+  //   wait
+  await page.waitForTimeout(3000);
 
   //   close browser
   await browser.close();
