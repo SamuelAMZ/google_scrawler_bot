@@ -7,7 +7,7 @@ const checkForResultFound = require("./checkIfResultFound");
 const grabResults = require("./grabResults");
 const paginateNext = require("./paginateToNext");
 
-const paginateAndReturnResults = async (page) => {
+const paginateAndReturnResults = async (page, numberOfPage) => {
   // check if results found
   const isResults = checkForResultFound(page);
 
@@ -27,13 +27,6 @@ const paginateAndReturnResults = async (page) => {
   while (continueLoop) {
     numberOfRun++;
     console.log("run loop " + numberOfRun + " times");
-
-    // 10 runs stop the loop
-    if (numberOfRun === 20) {
-      // stop loop
-      continueLoop = false;
-      break;
-    }
 
     // grab results
     const results = await grabResults(page);
@@ -58,6 +51,13 @@ const paginateAndReturnResults = async (page) => {
       //   reset run counter
       numberOfRun = 0;
       console.log("paginate stop the loop");
+      break;
+    }
+
+    // stop the loop once reach the max pagination
+    if (numberOfRun === Number(numberOfPage)) {
+      // stop loop
+      continueLoop = false;
       break;
     }
   }

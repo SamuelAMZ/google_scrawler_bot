@@ -1,21 +1,19 @@
 // this file will remove all matches domain from the arr
 
-const filterDomains = async (allDomains, toSkipDomains) => {
-  // loop in and when something do not match you can push it to the filtered array
-  const filterdArray = [];
+const filterDomains = async (allDomains, toSkipDomains, allLinks) => {
+  let res = allDomains.filter((item) => !toSkipDomains.includes(item.link));
 
-  for (let i = 0; i < allDomains.length; i++) {
-    for (let y = 0; y < toSkipDomains.length; y++) {
-      if (
-        allDomains[i].trim().toLowerCase() !==
-        toSkipDomains[y].trim().toLowerCase()
-      ) {
-        filterdArray.push(allDomains[i].trim().toLowerCase());
+  // search and find the right links
+  let arr = [];
+  res.forEach((tr) => {
+    allLinks.forEach((elm) => {
+      if (tr.text === elm.text && !arr.includes(elm.link)) {
+        arr.push(elm.link);
       }
-    }
-  }
+    });
+  });
 
-  return filterdArray;
+  return arr;
 };
 
 module.exports = filterDomains;

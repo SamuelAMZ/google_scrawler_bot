@@ -2,7 +2,7 @@
 
 // models
 const SkipedDomains = require("../../models/skipedDomains");
-const AllLinks = require("../../models/AllLinks");
+const Searches = require("../../models/Searches");
 
 // imports functions
 const pullLinks = require("../helpers/pullLinks");
@@ -14,58 +14,74 @@ const filterLinks = async (docId) => {
   // pull all links based on doc id (helper)
   const allLinks = await pullLinks(docId);
   if (allLinks === "nolink") {
-    return { status: "bad", message: "no link found for this keyword" };
+    return { code: "bad", message: "no link found for this keyword" };
   }
   if (allLinks === "error") {
-    return { status: "bad", message: "error when pulling links from database" };
-  }
-
-  // pull default domains to skip from db
-  let toSkipDomains = [];
-  try {
-    const domains = await SkipedDomains.find();
-    toSkipDomains.push(...domains);
-  } catch (error) {
-    console.log(error);
-    toSkipDomains = ["google, wikipedia"];
+    return { code: "bad", message: "error when pulling links from database" };
   }
 
   // detect all links domain and return them as an array (helper)
-  const linksDomains = await detectDomains(allLinks);
+  const linksDomains = await detectDomains(allLinks.allResults);
   if (linksDomains === "nolink") {
     return {
-      status: "bad",
+      code: "bad",
       message: "error extrating domains from result links",
     };
   }
 
-  // filter and skip the matches (helper)
-  const filterResult = await filterDomains(linksDomains, toSkipDomains);
-  if (filterResult.length < 1) {
-    return { status: "bad", message: "no link left after filtering" };
+  let filterFinalArray = [];
+  let afterDomainsFilter = [];
+  let afterLinksFilter = [];
+
+  // filter domain
+  if (allLinks.domainsLinks[0] !== "" && allLinks.domainsLinks.length >= 1) {
+    // filter and skip exact matches (helper)
+    const finalFilterResult = await filterDomains(
+      linksDomains,
+      allLinks.domainsLinks,
+      allLinks.allResults
+    );
+    if (finalFilterResult.length < 1) {
+      return { code: "bad", message: "no link left after final filtering 2" };
+    }
+
+    // push to final arr
+    afterDomainsFilter.push(...finalFilterResult);
   }
 
-  // pull exact links to skip
-  let exactLinks = [];
+  // filter exact links
+  if (allLinks.exactLinks[0] !== "" && allLinks.exactLinks.length >= 1) {
+    // filter and skip exact matches (helper)
+    // links
+    const actualLinks = [];
+    allLinks.allResults.forEach((lin) => {
+      actualLinks.push(lin.link);
+    });
+    const finalFilterResult = await filterExactLinks(
+      afterDomainsFilter.length > 0 ? afterDomainsFilter : actualLinks,
+      allLinks.exactLinks
+    );
+    if (finalFilterResult.length < 1) {
+      return { code: "bad", message: "no link left after final filtering 2" };
+    }
+
+    // push to final arr
+    afterLinksFilter.push(...finalFilterResult);
+  }
+
+  // remove duplicates
+  filterFinalArray = [...afterLinksFilter];
+  let uniqueChars = [...new Set(filterFinalArray)];
+
+  // update db
   try {
-    const links = await AllLinks.find();
-    exactLinks.push(...links);
+    const search = await Searches.findById(docId);
+    await search.updateOne({ filtered: uniqueChars });
   } catch (error) {
     console.log(error);
   }
 
-  if (exactLinks.length >= 1) {
-    // filter and skip exact matches (helper)
-    const finalFilterResult = await filterExactLinks(allLinks, exactLinks);
-    if (finalFilterResult.length < 1) {
-      return { status: "bad", message: "no link left after final filtering" };
-    }
-
-    return finalFilterResult;
-  }
-
-  //   else just return first filter result
-  return filterResult;
+  return true;
 };
 
 module.exports = filterLinks;

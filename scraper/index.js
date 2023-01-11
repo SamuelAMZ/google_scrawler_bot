@@ -9,29 +9,12 @@ const blockResourcesPlugin =
   require("puppeteer-extra-plugin-block-resources")();
 puppeteer.use(blockResourcesPlugin);
 
-// node built in waiter
-const { setTimeout } = require("timers/promises");
-
 require("dotenv").config();
 
 // fonctions imports
 const paginateAndReturnResults = require("./paginateInPages/index");
 
-// db funtions
-const addNewResult = require("../db/addNewResult");
-
-// connect to db
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.DB_URI, (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("connected to db");
-  }
-});
-
-const scrapper = async () => {
+const scrapper = async (keyword, numberOfPage) => {
   const browser = await puppeteer.launch({
     headless: false,
   });
@@ -50,7 +33,7 @@ const scrapper = async () => {
     timeout: 120000,
   });
 
-  const keyword = "kimberlina cherie";
+  // const keyword = "kimberlina cherie";
 
   //   typing the keyword
   await page.waitForSelector("[name='q']");
@@ -66,22 +49,25 @@ const scrapper = async () => {
   await page.waitForTimeout(3000);
 
   //   paginate on the first 10 results and return all results
-  const results = await paginateAndReturnResults(page);
+  const results = await paginateAndReturnResults(page, numberOfPage);
+
   if (!results) {
     console.log("no result found");
-    // add only the keyword nothing else
-    await addNewResult({ keyword });
+
+    //   close browser
+    await browser.close();
+
+    // return to notify req
+    return false;
   } else {
     console.log(results, results.length);
-    // add all results to db
-    await addNewResult({ keyword, allResults: results });
+
+    //   close browser
+    await browser.close();
+
+    // return to notify req
+    return results;
   }
-
-  //   wait
-  await page.waitForTimeout(3000);
-
-  //   close browser
-  await browser.close();
 };
 
-scrapper();
+module.exports = scrapper;

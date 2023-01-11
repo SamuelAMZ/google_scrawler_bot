@@ -4,12 +4,15 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node ./api/index.js",
+    "start": "nodemon ./server.js",
     "scrap": "node ./scraper/index.js"
   },
   "author": "SamuelAMZ",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "extract-domain": "^2.4.8",
@@ -19,5 +22,8 @@
     "puppeteer-extra-plugin-anonymize-ua": "^2.4.4",
     "puppeteer-extra-plugin-block-resources": "^2.4.2",
     "puppeteer-extra-plugin-stealth": "^2.11.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }

@@ -8,8 +8,20 @@ const detectDomains = async (links) => {
     return "nolink";
   }
 
-  const domains = extractDomain(links);
-  return domains;
+  // links
+  const actualLinks = [];
+  links.forEach((lin) => {
+    actualLinks.push(lin.link);
+  });
+
+  const domains = extractDomain(actualLinks);
+
+  let readyArr = [];
+  domains.forEach((elm, idx) => {
+    readyArr.push({ text: links[idx].text, link: elm });
+  });
+
+  return readyArr;
 };
 
 module.exports = detectDomains;

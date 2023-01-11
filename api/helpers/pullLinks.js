@@ -1,17 +1,17 @@
 // pull all links based on document id
 
 // db models imports
-const AllLinks = require("../../models/AllLinks");
+const Searches = require("../../models/Searches");
 
 const pullLinks = async (docId) => {
   try {
-    const allLinks = await AllLinks.findById(docId);
+    const searches = await Searches.findById(docId);
 
-    if (!allLinks) {
+    if (!searches) {
       return "nolink";
     }
 
-    return allLinks.allResults;
+    return searches;
   } catch (error) {
     console.log(error);
     return "error";
