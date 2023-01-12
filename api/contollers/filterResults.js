@@ -70,7 +70,14 @@ const filterLinks = async (docId) => {
   }
 
   // remove duplicates
-  filterFinalArray = [...afterLinksFilter];
+  // console.log(afterDomainsFilter.length, afterLinksFilter.length);
+
+  if (afterDomainsFilter.length > 0 && afterLinksFilter.length === 0) {
+    filterFinalArray = [...afterDomainsFilter, ...afterLinksFilter];
+  } else {
+    filterFinalArray = [...afterLinksFilter];
+  }
+
   let uniqueChars = [...new Set(filterFinalArray)];
 
   // update db
