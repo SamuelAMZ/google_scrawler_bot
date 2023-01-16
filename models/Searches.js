@@ -13,14 +13,6 @@ const searches = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    keywordOnly: {
-      type: Array,
-      default: [],
-    },
-    keywordAndMedia: {
-      type: Array,
-      default: [],
-    },
     exactLinks: {
       type: Array,
       default: [],
@@ -46,7 +38,18 @@ const searches = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "In process...",
+      default: "step 1",
+    },
+    visitResults: {
+      type: Array,
+      default: [],
+    },
+    linksStats: {
+      type: Object,
+      default: {
+        allLinksCount: 0,
+        visitedCount: 0,
+      },
     },
   },
   { timestamps: true }

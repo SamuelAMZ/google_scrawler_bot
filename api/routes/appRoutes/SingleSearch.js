@@ -1,6 +1,6 @@
 const express = require("express");
 const SingleSearchRoute = express.Router();
-const Searches = require("../../models/Searches");
+const Searches = require("../../../models/Searches");
 const Joi = require("@hapi/joi");
 
 const schema = Joi.object({

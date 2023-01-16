@@ -4,18 +4,24 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const timeout = require("connect-timeout");
 
-// routes
-const NewSearchRoute = require("./api/routes/NewSearch");
-const SingleSearchRoute = require("./api/routes/SingleSearch");
-const FilterResultRoute = require("./api/routes/FIlterResult");
-const HomeAnalytics = require("./api/routes/HomeAnalyticsRoute");
-const PaginationRoute = require("./api/routes/Pagination");
-const newAccountRoute = require("./api/routes/NewAccount");
-const LoginRoute = require("./api/routes/LoginRoute");
-const isLoginRoute = require("./api/routes/isLogin");
-const LogoutRoute = require("./api/routes/Logout");
+// app routes
+const NewSearchRoute = require("./api/routes/appRoutes/NewSearch");
+const SingleSearchRoute = require("./api/routes/appRoutes/SingleSearch");
+const FilterResultRoute = require("./api/routes/appRoutes/FIlterResult");
+const HomeAnalytics = require("./api/routes/appRoutes/HomeAnalyticsRoute");
+const PaginationRoute = require("./api/routes/appRoutes/Pagination");
+const VisiteEachLinkRoute = require("./api/routes/appRoutes/VisitEachLinkRoute");
 
+// auth routes
+const newAccountRoute = require("./api/routes/authRoutes/NewAccount");
+const LoginRoute = require("./api/routes/authRoutes/LoginRoute");
+const isLoginRoute = require("./api/routes/authRoutes/isLogin");
+const LogoutRoute = require("./api/routes/authRoutes/Logout");
+
+// timeout
+app.use(timeout(600000));
 // body parsing
 app.use(express.json());
 // cookies
@@ -125,6 +131,14 @@ app.use("/api/is-login", isLoginRoute);
     @endpoint: /api/logout
 */
 app.use("/api/logout", LogoutRoute);
+
+/*   
+    @desc: visit each link one by one check for video and keyword present
+    @method: POST
+    @privacy: public
+    @endpoint: /api/visit-each-link
+*/
+app.use("/api/visit-each-link", VisiteEachLinkRoute);
 
 app.listen(process.env.PORT, () =>
   console.log(`app listen on port ${process.env.PORT}`)

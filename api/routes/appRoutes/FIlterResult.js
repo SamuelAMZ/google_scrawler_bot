@@ -1,10 +1,10 @@
 const express = require("express");
 const FilterResultRoute = express.Router();
-const Searches = require("../../models/Searches");
+const Searches = require("../../../models/Searches");
 const Joi = require("@hapi/joi");
 
 // functions
-const filterLinks = require("../contollers/filterResults");
+const filterLinks = require("../../contollers/filterResults");
 
 const schema = Joi.object({
   id: Joi.string().max(1024).required(),
@@ -39,8 +39,9 @@ FilterResultRoute.post("/", async (req, res) => {
         steps: {
           step1: "done!",
           step2: "done!",
-          step3: "loading...",
+          step3: "ready to start",
         },
+        status: "step 3",
       });
 
       const updated = await Searches.findOne({ _id: id });
@@ -61,8 +62,9 @@ FilterResultRoute.post("/", async (req, res) => {
         steps: {
           step1: "done!",
           step2: "done!",
-          step3: "loading...",
+          step3: "ready to start",
         },
+        status: "step 3",
       });
 
       const updated = await Searches.findOne({ _id: id });

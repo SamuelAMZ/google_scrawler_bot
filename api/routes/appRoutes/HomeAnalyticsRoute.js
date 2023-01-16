@@ -1,7 +1,7 @@
 const express = require("express");
 const HomeAnalytics = express.Router();
 
-const Analytics = require("../../models/Analytics");
+const Analytics = require("../../../models/Analytics");
 
 HomeAnalytics.post("/", async (req, res) => {
   //   search search id

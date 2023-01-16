@@ -2,7 +2,7 @@ const express = require("express");
 const PaginationRoute = express.Router();
 
 // model
-const Searches = require("../../models/Searches");
+const Searches = require("../../../models/Searches");
 
 // validation lib
 const Joi = require("@hapi/joi");

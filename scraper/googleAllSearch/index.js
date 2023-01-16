@@ -4,6 +4,8 @@ const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 puppeteer.use(StealthPlugin());
 
+const { executablePath } = require("puppeteer");
+
 // ressource blocker
 const blockResourcesPlugin =
   require("puppeteer-extra-plugin-block-resources")();
@@ -17,6 +19,7 @@ const paginateAndReturnResults = require("./paginateInPages/index");
 const scrapper = async (keyword, numberOfPage) => {
   const browser = await puppeteer.launch({
     headless: false,
+    executablePath: executablePath(),
   });
 
   const page = await browser.newPage();

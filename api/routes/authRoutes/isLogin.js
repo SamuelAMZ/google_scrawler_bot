@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const isLoginRoute = express.Router();
 
 // models
-const Accounts = require("../../models/Accounts");
+const Accounts = require("../../../models/Accounts");
 
 // check user token and know if it s valid token of a valid user or not
 isLoginRoute.get("/", async (req, res) => {

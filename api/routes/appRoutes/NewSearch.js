@@ -2,14 +2,14 @@ const express = require("express");
 const NewSearchRoute = express.Router();
 
 // models
-const Searches = require("../../models/Searches");
-const Analytics = require("../../models/Analytics");
+const Searches = require("../../../models/Searches");
+const Analytics = require("../../../models/Analytics");
 
 // library
 const Joi = require("@hapi/joi");
 
 // scrapper
-const scrapper = require("../../scraper/index");
+const scrapper = require("../../../scraper/googleAllSearch/index");
 
 const schema = Joi.object({
   keyword: Joi.string().max(1024).required(),
@@ -78,6 +78,7 @@ NewSearchRoute.post("/", async (req, res) => {
         step2: "loading...",
         step3: "not started",
       },
+      status: "step 2",
     });
 
     // update analytics

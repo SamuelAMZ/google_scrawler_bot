@@ -2,7 +2,7 @@ const express = require("express");
 const LoginRoute = express.Router();
 
 // model
-const Accounts = require("../../models/Accounts");
+const Accounts = require("../../../models/Accounts");
 // validation
 const Joi = require("@hapi/joi");
 // dehashing pass
