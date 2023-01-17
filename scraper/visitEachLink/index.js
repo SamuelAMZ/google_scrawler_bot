@@ -89,7 +89,7 @@ const visitEachLinkScraper = async (links, keyword, docId) => {
       // visit from the top of the archives
       await page.goto(links[i], {
         waitUntil: "networkidle2",
-        timeout: 120000,
+        timeout: 60000,
       });
 
       // update link visited count

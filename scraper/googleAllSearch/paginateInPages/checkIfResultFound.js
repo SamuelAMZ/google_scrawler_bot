@@ -2,7 +2,7 @@
 
 const checkForResultFound = async (page) => {
   try {
-    await page.waitForSelector("#rso", {
+    const sel = await page.waitForSelector("#rso", {
       timeout: 4000,
     });
     return true;

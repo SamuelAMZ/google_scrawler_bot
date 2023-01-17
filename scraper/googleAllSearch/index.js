@@ -15,6 +15,7 @@ require("dotenv").config();
 
 // fonctions imports
 const paginateAndReturnResults = require("./paginateInPages/index");
+const linkBasedNavigation = require("./linkNavigation/index");
 
 const scrapper = async (keyword, numberOfPage) => {
   const browser = await puppeteer.launch({
@@ -52,7 +53,8 @@ const scrapper = async (keyword, numberOfPage) => {
   await page.waitForTimeout(3000);
 
   //   paginate on the first 10 results and return all results
-  const results = await paginateAndReturnResults(page, numberOfPage);
+  // const results = await paginateAndReturnResults(page, numberOfPage);
+  const results = await linkBasedNavigation(page, numberOfPage, keyword);
 
   if (!results) {
     console.log("no result found");

@@ -9,7 +9,7 @@ const grabResults = async (page) => {
       timeout: 4000,
     });
   } catch (error) {
-    console.log(error);
+    console.log("nothing from grab details 1");
   }
 
   try {
@@ -27,7 +27,7 @@ const grabResults = async (page) => {
       return resArr;
     });
   } catch (error) {
-    console.log(error);
+    console.log("nothing from grab details 2");
   }
 
   //   //   try to see if first result have a table of results  (children)

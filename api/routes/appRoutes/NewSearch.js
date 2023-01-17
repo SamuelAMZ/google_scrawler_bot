@@ -59,7 +59,15 @@ NewSearchRoute.post("/", async (req, res) => {
     const result = await scrapper(keyword, numberOfPages);
 
     if (!result) {
-      await search.updateOne({ isResultFound: false });
+      await search.updateOne({
+        isResultFound: false,
+        allResults: result,
+        steps: {
+          step1: "done!",
+          step2: "not started",
+          step3: "not started",
+        },
+      });
 
       return res.status(201).json({
         message: "step 1 finished successfully",
