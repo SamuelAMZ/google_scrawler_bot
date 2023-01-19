@@ -13,6 +13,8 @@ const FilterResultRoute = require("./api/routes/appRoutes/FIlterResult");
 const HomeAnalytics = require("./api/routes/appRoutes/HomeAnalyticsRoute");
 const PaginationRoute = require("./api/routes/appRoutes/Pagination");
 const VisiteEachLinkRoute = require("./api/routes/appRoutes/VisitEachLinkRoute");
+const RemoveSearchRoute = require("./api/routes/appRoutes/RemoveSearch");
+const DownloadCsvRoute = require("./api/routes/appRoutes/DownloadCsv");
 
 // auth routes
 const newAccountRoute = require("./api/routes/authRoutes/NewAccount");
@@ -139,6 +141,22 @@ app.use("/api/logout", LogoutRoute);
     @endpoint: /api/visit-each-link
 */
 app.use("/api/visit-each-link", VisiteEachLinkRoute);
+
+/*   
+    @desc: remove single search
+    @method: POST
+    @privacy: public
+    @endpoint: /api/remove-single-earch
+*/
+app.use("/api/remove-single-earch", RemoveSearchRoute);
+
+/*   
+    @desc: download csv
+    @method: POST
+    @privacy: public
+    @endpoint: /api/download-csv
+*/
+app.use("/api/download-csv", DownloadCsvRoute);
 
 app.listen(process.env.PORT, () =>
   console.log(`app listen on port ${process.env.PORT}`)

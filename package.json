@@ -24,7 +24,8 @@
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-anonymize-ua": "^2.4.4",
     "puppeteer-extra-plugin-block-resources": "^2.4.2",
-    "puppeteer-extra-plugin-stealth": "^2.11.1"
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
+    "puppeteer-stream": "^2.1.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
