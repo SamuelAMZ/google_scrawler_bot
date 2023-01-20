@@ -5,6 +5,9 @@ const searches = new mongoose.Schema(
     keyword: {
       type: String,
     },
+    tab: {
+      type: String,
+    },
     allResults: {
       type: Array,
       default: [],

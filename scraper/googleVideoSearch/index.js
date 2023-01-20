@@ -14,10 +14,9 @@ puppeteer.use(blockResourcesPlugin);
 require("dotenv").config();
 
 // fonctions imports
-const paginateAndReturnResults = require("./paginateInPages/index");
 const linkBasedNavigation = require("./linkNavigation/index");
 
-const allTabScraper = async (keyword, numberOfPage) => {
+const videosTabScraper = async (keyword, numberOfPage) => {
   const browser = await puppeteer.launch({
     headless: false,
     executablePath: executablePath(),
@@ -53,7 +52,6 @@ const allTabScraper = async (keyword, numberOfPage) => {
   await page.waitForTimeout(3000);
 
   //   paginate on the first 10 results and return all results
-  // const results = await paginateAndReturnResults(page, numberOfPage);
   const results = await linkBasedNavigation(page, numberOfPage, keyword);
 
   if (!results) {
@@ -75,4 +73,4 @@ const allTabScraper = async (keyword, numberOfPage) => {
   }
 };
 
-module.exports = allTabScraper;
+module.exports = videosTabScraper;

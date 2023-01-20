@@ -9,28 +9,32 @@ const Analytics = require("../../../models/Analytics");
 const Joi = require("@hapi/joi");
 
 // scrapper
-const scrapper = require("../../../scraper/googleAllSearch/index");
+const allTabScraper = require("../../../scraper/googleAllSearch/index");
+const videoTabScraper = require("../../../scraper/googleVideoSearch/index");
 
 const schema = Joi.object({
   keyword: Joi.string().max(1024).required(),
   numberOfPages: Joi.string().max(1024).required(),
+  tab: Joi.string().max(1024).required(),
   urls: Joi.array().required(),
   domains: Joi.array().required(),
 });
 
 NewSearchRoute.post("/", async (req, res) => {
-  const { keyword, numberOfPages, urls, domains } = req.body;
+  const { keyword, numberOfPages, tab, urls, domains } = req.body;
 
   // joi validation sbody data
   try {
     const validation = await schema.validateAsync({
       keyword,
       numberOfPages,
+      tab,
       urls,
       domains,
     });
   } catch (error) {
-    res.status(400).json({ message: error.details[0].message });
+    console.log(error);
+    res.status(400).json({ message: error.message });
     return;
   }
 
@@ -38,6 +42,7 @@ NewSearchRoute.post("/", async (req, res) => {
   const search = new Searches({
     keyword: keyword,
     exactLinks: urls,
+    tab: tab,
     domainsLinks: domains,
     numberOfPagesToVisitOnGoogle: numberOfPages,
   });
@@ -56,7 +61,20 @@ NewSearchRoute.post("/", async (req, res) => {
 
   try {
     // launch scrapper
-    const result = await scrapper(keyword, numberOfPages);
+    let result = [];
+    if (tab === "all") {
+      let allTabResult = await allTabScraper(keyword, numberOfPages);
+      result.push(...allTabResult);
+    }
+    if (tab === "videos") {
+      let videoTabResult = await videoTabScraper(keyword, numberOfPages);
+      result.push(...videoTabResult);
+    }
+    if (tab === "both") {
+      let allTabResult = await allTabScraper(keyword, numberOfPages);
+      let videoTabResult = await videoTabScraper(keyword, numberOfPages);
+      result.push(...allTabResult, ...videoTabResult);
+    }
 
     if (!result) {
       await search.updateOne({
