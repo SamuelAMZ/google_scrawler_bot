@@ -34,6 +34,8 @@ isLoginRoute.get("/", async (req, res) => {
             user: {
               name: idExist.name,
               id: idExist._id,
+              email: idExist.email,
+              date: idExist.createdAt,
             },
           });
         }

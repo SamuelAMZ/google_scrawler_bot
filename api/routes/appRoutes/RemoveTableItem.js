@@ -1,20 +1,22 @@
 const express = require("express");
-const RemoveSearchRoute = express.Router();
-const Searches = require("../../../models/Searches");
+const RemoveTableItemRoute = express.Router();
+const SkipedDomains = require("../../../models/skipedDomains");
+const SkipedUrls = require("../../../models/skipedUrls");
 const Joi = require("@hapi/joi");
 
 const schema = Joi.object({
   id: Joi.string().max(1024).required(),
-  id: Joi.string().max(1024).required(),
+  target: Joi.string().max(1024).required(),
 });
 
-RemoveSearchRoute.post("/", async (req, res) => {
-  const { id } = req.body;
+RemoveTableItemRoute.post("/", async (req, res) => {
+  const { id, target } = req.body;
 
   // joi validation sbody data
   try {
     const validation = await schema.validateAsync({
       id,
+      target,
     });
   } catch (error) {
     res.status(400).json({ message: error.details[0].message });
@@ -23,11 +25,19 @@ RemoveSearchRoute.post("/", async (req, res) => {
 
   //   search search id
   try {
-    const search = await Searches.findOne({ _id: id });
+    let itemToRemove;
+
+    if (target === "domains") {
+      itemToRemove = await SkipedDomains.findOne({ _id: id });
+    }
+    if (target === "urls") {
+      itemToRemove = await SkipedUrls.findOne({ _id: id });
+    }
+
     // if no search send 400
-    if (!search) {
+    if (!itemToRemove) {
       return res.status(400).json({
-        message: `single search not found`,
+        message: `domain not found`,
         code: "bad",
         payload: "nothing",
       });
@@ -35,10 +45,10 @@ RemoveSearchRoute.post("/", async (req, res) => {
 
     // remove search
     try {
-      await search.remove();
+      await itemToRemove.remove();
 
       return res.status(200).json({
-        message: `single search removed successfully`,
+        message: `domain removed successfully`,
         code: "ok",
         payload: "removed",
       });
@@ -46,7 +56,7 @@ RemoveSearchRoute.post("/", async (req, res) => {
       console.log(error);
 
       return res.status(500).json({
-        message: `error removing single search`,
+        message: `error removing domain`,
         code: "bad",
         payload: "nothing",
       });
@@ -54,9 +64,9 @@ RemoveSearchRoute.post("/", async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      message: `server error when searching for single search`,
+      message: `server error when searching for domain`,
     });
   }
 });
 
-module.exports = RemoveSearchRoute;
+module.exports = RemoveTableItemRoute;

@@ -1,20 +1,23 @@
 const express = require("express");
 const PaginationRoute = express.Router();
 
-// model
-const Searches = require("../../../models/Searches");
-
 // validation lib
 const Joi = require("@hapi/joi");
+
+// helpers
+const searchPagination = require("../../helpers/searchPagination");
+const domainPagination = require("../../helpers/domainsPagination");
+const urlPagination = require("../../helpers/urlPagination");
 
 const schema = Joi.object({
   page: Joi.string().max(1024).required(),
   perPage: Joi.string().max(1024).required(),
   searchKeyword: Joi.string().max(1024).allow(""),
+  target: Joi.string().max(1024).required(),
 });
 
 PaginationRoute.post("/", async (req, res) => {
-  const { page, perPage, searchKeyword } = req.body;
+  const { page, perPage, searchKeyword, target } = req.body;
 
   // joi validation sbody data
   try {
@@ -22,26 +25,32 @@ PaginationRoute.post("/", async (req, res) => {
       page,
       perPage,
       searchKeyword,
+      target,
     });
   } catch (error) {
-    res.status(400).json({ message: error.details[0].message });
+    res.status(400).json({ message: error.message });
     return;
   }
 
   //   search search id
   try {
-    const list = await Searches.find({
-      keyword: { $regex: searchKeyword, $options: "i" },
-    })
-      .sort([["createdAt", -1]])
-      .skip(Number(page) * Number(perPage))
-      .limit(Number(perPage));
+    let dataReturned = null;
+
+    if (target === "searches") {
+      dataReturned = await searchPagination(searchKeyword, page, perPage);
+    }
+    if (target === "domains") {
+      dataReturned = await domainPagination(searchKeyword, page, perPage);
+    }
+    if (target === "urls") {
+      dataReturned = await urlPagination(searchKeyword, page, perPage);
+    }
+
+    // all result found
+    const list = dataReturned.list;
 
     // get total result
-    const totalItems = await Searches.find({
-      keyword: { $regex: searchKeyword, $options: "i" },
-    });
-    const totalItemsLength = totalItems.length;
+    const totalItems = dataReturned.total;
 
     // if no search send 400
     if (!list || !totalItems) {
@@ -55,7 +64,7 @@ PaginationRoute.post("/", async (req, res) => {
     return res.status(200).json({
       message: `single search fetched successfully`,
       code: "ok",
-      payload: { list, totalItemsLength },
+      payload: { list, totalItemsLength: totalItems },
     });
   } catch (error) {
     console.log(error);

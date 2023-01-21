@@ -15,6 +15,9 @@ const PaginationRoute = require("./api/routes/appRoutes/Pagination");
 const VisiteEachLinkRoute = require("./api/routes/appRoutes/VisitEachLinkRoute");
 const RemoveSearchRoute = require("./api/routes/appRoutes/RemoveSearch");
 const DownloadCsvRoute = require("./api/routes/appRoutes/DownloadCsv");
+const NewDomainRoute = require("./api/routes/appRoutes/AddNewDomain");
+const RemoveTableItemRoute = require("./api/routes/appRoutes/RemoveTableItem");
+const NewUrlRoute = require("./api/routes/appRoutes/AddNewUrl");
 
 // auth routes
 const newAccountRoute = require("./api/routes/authRoutes/NewAccount");
@@ -157,6 +160,30 @@ app.use("/api/remove-single-earch", RemoveSearchRoute);
     @endpoint: /api/download-csv
 */
 app.use("/api/download-csv", DownloadCsvRoute);
+
+/*   
+    @desc: add new domain
+    @method: POST
+    @privacy: public
+    @endpoint: /api/new-domain
+*/
+app.use("/api/new-domain", NewDomainRoute);
+
+/*   
+    @desc: remove domain
+    @method: POST
+    @privacy: public
+    @endpoint: /api/remove-table-item
+*/
+app.use("/api/remove-table-item", RemoveTableItemRoute);
+
+/*   
+    @desc: add url
+    @method: POST
+    @privacy: public
+    @endpoint: /api/new-url
+*/
+app.use("/api/new-url", NewUrlRoute);
 
 app.listen(process.env.PORT, () =>
   console.log(`app listen on port ${process.env.PORT}`)
