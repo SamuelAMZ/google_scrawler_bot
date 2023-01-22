@@ -4,7 +4,6 @@ let result = [];
 const checkForVideo = async (page) => {
   const videos = { isVideo: false, count: 0, urls: [] };
 
-  // await page.setRequestInterception(true);
   page.on("request", async (request) => {
     const url = request.url().toLowerCase();
     const resourceType = request.resourceType();
@@ -24,9 +23,111 @@ const checkForVideo = async (page) => {
   // remove result duplicates
   let noDupliactesResult = [...new Set(result)];
 
-  videos.urls = noDupliactesResult;
+  videos.urls.push(...noDupliactesResult);
   videos.isVideo = noDupliactesResult.length > 0 ? true : false;
   videos.count = noDupliactesResult.length;
+
+  // check for video in normal DOM
+  const checkForVideoInDom = async () => {
+    let videoTag;
+    try {
+      videoTag = await page.evaluate(() => {
+        let res;
+        res = document.querySelector("video");
+
+        if (res) {
+          return {
+            videoUrl: res.getAttribute("src") ? res.getAttribute("src") : "",
+            videoThere: true,
+          };
+        } else {
+          return {
+            videoUrl: "",
+            videoThere: false,
+          };
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    videoTag.videoThere ? videos.urls.push(videoTag.videoUrl) : false;
+    videoTag.videoThere
+      ? (videos.isVideo = true)
+      : (videos.isVideo = videos.isVideo);
+    videoTag.videoThere
+      ? (videos.count = Number(videos.count) + 1)
+      : (videos.count = videos.count);
+  };
+
+  await checkForVideoInDom();
+
+  // check for videos in iframe DOM
+  try {
+    // check for video tag in iframe
+    await page.waitForSelector("iframe", { timeout: 2000 });
+
+    console.log("iframe found");
+
+    const elementHandle = await page.$$("iframe");
+
+    for (let i = 0; i < elementHandle.length; i++) {
+      const frame = await elementHandle[i].contentFrame();
+      const iframeBody = await frame.waitForSelector("html", { timeout: 500 });
+      await iframeBody.evaluate((b) => b.click());
+      await page.waitForTimeout(500);
+
+      console.log("clicked");
+
+      const checkForVideoInIframe = async (iframeBody) => {
+        try {
+          const videoIframe = await iframeBody.waitForSelector("video", {
+            timeout: 2000,
+          });
+        } catch (error) {
+          console.log(error, "no video");
+        }
+
+        let videoTag;
+        try {
+          videoTag = await iframeBody.evaluate((iframeBody) => {
+            let res;
+            res = iframeBody.querySelector("video");
+
+            if (res) {
+              return {
+                videoUrl: res.getAttribute("src")
+                  ? res.getAttribute("src")
+                  : "",
+                videoThere: true,
+              };
+            } else {
+              return {
+                videoUrl: "",
+                videoThere: false,
+              };
+            }
+          }, iframeBody);
+        } catch (error) {
+          console.log(error);
+        }
+
+        videoTag.videoThere ? videos.urls.push(videoTag.videoUrl) : false;
+        videoTag.videoThere
+          ? (videos.isVideo = true)
+          : (videos.isVideo = videos.isVideo);
+        videoTag.videoThere
+          ? (videos.count = Number(videos.count) + 1)
+          : (videos.count = videos.count);
+      };
+      await checkForVideoInIframe(iframeBody);
+
+      console.log("getted");
+    }
+  } catch (error) {
+    console.log(error);
+    console.log("iframe not found");
+  }
 
   // reset result
   result = [];

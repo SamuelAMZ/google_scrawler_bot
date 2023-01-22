@@ -21,25 +21,9 @@ const checkForVideo = require("./checkForVideo/index");
 const Searches = require("../../models/Searches");
 
 // const links = [
-//   // "https://la.spankbang.com/56cbn/video/r34l+tw1n5",
-//   "http://www.incestflix.com/watch/kimberlina-cherie-courtney-taylor-you-know-me",
-//   "https://www.eporner.com/video-TSTazlnTeIb/kimberlina-cherie-courtney-taylor-realtwinz-01/",
-//   "https://exporntoons.net/watch/-200686600_456239183",
-//   "https://www.instagram.com/kimberlinacherie2/?hl=fr",
-//   "https://www.xfreehd.com/video/419032/courtney-taylor-kimberlina-cherie-not-real-twins",
-//   "https://www.porntrex.com/video/1507816/realtwinz-kimberlina-cherie-courtney-taylor-video-6",
-//   "https://www.porntrex.video/281482/kimberlina-cherie-courtney-taylor-realtwinz-tribbing/?kt_lang=fr",
-//   "https://noodlemagazine.com/watch/-171718843_456239139",
-//   "http://taboosex.club/tag/Kimberlina-Cherie/or/Aunt",
-//   "https://www.camwhores.video/videos/9212557/kimberlina-cherie-hardcore-and-lesbo-compilation/",
-//   "https://www.anon-v.to/videos/427770/kimberlina-cherie-courtney-taylor-realtwinz-02-19f65ccab90d2834/",
-//   "http://www.tracie.info/kimberlina-cherie/",
-//   "https://www.eachporn.com/fr/search/Kimberlina-Cherie/",
-//   "https://thethothub.com/videos/261105/kimberlina-cherie-bj/",
-//   "https://xhdporno.me/search?text=Kimberlina%20Cherie",
-//   "https://fapello.com/kimberlina-cherie/8/",
-//   "https://amatube.tv/search/Kimberlina-cherie/",
-//   "https://twitter.com/onlykimberlina",
+//   "https://www.sexysluts.tv/videos/787843/kimberlina-cherie-courtney-taylor-realtwinz-compilat/",
+//   "https://pornzog.com/video/14204695/realtwinz-kimberlina-cherie-courtney-taylor-video-6/",
+//   "https://nudespree.com/videos/1830302/kimberlina-cherie-courtney-taylor-realtwinz-compilat/",
 // ];
 // const keyword = "kimberlina cherie";
 
@@ -106,9 +90,6 @@ const visitEachLinkScraper = async (links, keyword, docId) => {
       //   check for the keyword on the target page
       const isKeywordPresent = await checkForKeywordOnPage(page, keywordArr);
 
-      // close request interception
-      // await page.setRequestInterception(false);
-
       // add to db
       console.log({
         link: links[i],
@@ -135,7 +116,7 @@ const visitEachLinkScraper = async (links, keyword, docId) => {
   return true;
 };
 
-// visitEachLinkScraper(links, keyword);
+// visitEachLinkScraper(links, keyword, "lorem");
 
 process
   .on("unhandledRejection", (reason, p) => {

@@ -18,6 +18,7 @@ const DownloadCsvRoute = require("./api/routes/appRoutes/DownloadCsv");
 const NewDomainRoute = require("./api/routes/appRoutes/AddNewDomain");
 const RemoveTableItemRoute = require("./api/routes/appRoutes/RemoveTableItem");
 const NewUrlRoute = require("./api/routes/appRoutes/AddNewUrl");
+const ReturnDefaultDomainsAndUrlsRoute = require("./api/routes/appRoutes/ReturnDefaultDomainsAndUrls");
 
 // auth routes
 const newAccountRoute = require("./api/routes/authRoutes/NewAccount");
@@ -184,6 +185,14 @@ app.use("/api/remove-table-item", RemoveTableItemRoute);
     @endpoint: /api/new-url
 */
 app.use("/api/new-url", NewUrlRoute);
+
+/*   
+    @desc: add url
+    @method: POST
+    @privacy: public
+    @endpoint: /api/defaults
+*/
+app.use("/api/defaults", ReturnDefaultDomainsAndUrlsRoute);
 
 app.listen(process.env.PORT, () =>
   console.log(`app listen on port ${process.env.PORT}`)
