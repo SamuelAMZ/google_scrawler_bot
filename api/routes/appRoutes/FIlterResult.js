@@ -27,6 +27,14 @@ FilterResultRoute.post("/", async (req, res) => {
   try {
     const search = await Searches.findOne({ _id: id });
 
+    if (search.status === "done") {
+      return res.status(200).json({
+        message: `already filtered`,
+        code: "ok",
+        payload: search,
+      });
+    }
+
     if (search.exactLinks[0] === "" && search.domainsLinks[0] === "") {
       // give the same urls as the original ones
       let dataArr = [];
