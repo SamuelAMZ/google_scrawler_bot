@@ -19,6 +19,10 @@ const NewDomainRoute = require("./api/routes/appRoutes/AddNewDomain");
 const RemoveTableItemRoute = require("./api/routes/appRoutes/RemoveTableItem");
 const NewUrlRoute = require("./api/routes/appRoutes/AddNewUrl");
 const ReturnDefaultDomainsAndUrlsRoute = require("./api/routes/appRoutes/ReturnDefaultDomainsAndUrls");
+const UserdetailsRoute = require("./api/routes/appRoutes/Userdetails");
+const UserVerificationRoute = require("./api/routes/appRoutes/UserVerification");
+const UserTakedownRequestsRoute = require("./api/routes/appRoutes/UserTakedownRequests");
+const UserUrlsAndDomainsRoute = require("./api/routes/appRoutes/UserUrlsAndDomains");
 
 // auth routes
 const newAccountRoute = require("./api/routes/authRoutes/NewAccount");
@@ -193,6 +197,38 @@ app.use("/api/new-url", NewUrlRoute);
     @endpoint: /api/defaults
 */
 app.use("/api/defaults", ReturnDefaultDomainsAndUrlsRoute);
+
+/*   
+    @desc: single app user detail
+    @method: POST
+    @privacy: public
+    @endpoint: /api/user-info
+*/
+app.use("/api/user-info", UserdetailsRoute);
+
+/*   
+    @desc: single app user verification url
+    @method: POST
+    @privacy: public
+    @endpoint: /api/user-verification-url
+*/
+app.use("/api/user-verification-url", UserVerificationRoute);
+
+/*   
+    @desc: user leaks reaport
+    @method: POST
+    @privacy: public
+    @endpoint: /api/user-leaks
+*/
+app.use("/api/user-leaks", UserTakedownRequestsRoute);
+
+/*   
+    @desc: user urls qnd domqins
+    @method: POST
+    @privacy: public
+    @endpoint: /api/user-urls-domains
+*/
+app.use("/api/user-urls-domains", UserUrlsAndDomainsRoute);
 
 app.listen(process.env.PORT, () =>
   console.log(`app listen on port ${process.env.PORT}`)

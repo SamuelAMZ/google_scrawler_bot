@@ -8,6 +8,7 @@ const Joi = require("@hapi/joi");
 const searchPagination = require("../../helpers/searchPagination");
 const domainPagination = require("../../helpers/domainsPagination");
 const urlPagination = require("../../helpers/urlPagination");
+const userPagination = require("../../helpers/usersPagination");
 
 const schema = Joi.object({
   page: Joi.string().max(1024).required(),
@@ -44,6 +45,9 @@ PaginationRoute.post("/", async (req, res) => {
     }
     if (target === "urls") {
       dataReturned = await urlPagination(searchKeyword, page, perPage);
+    }
+    if (target === "users") {
+      dataReturned = await userPagination(searchKeyword, page, perPage);
     }
 
     // all result found
